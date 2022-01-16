@@ -7,19 +7,21 @@ Assignment 1
 Student:
     - Hung Yu (Angus) Lin, A01034410, Set 6J
 ----------------------------------------------------------------------------------------------------
-Multithreading.py
+multiprocessing.py
     Performs mathematically intensive operations (Prime factorization) with file I/O.
-    Implements multithreading.
+    Implements multiprocessing.
     Measures performance with timing data.
 ----------------------------------------------------------------------------------------------------
 """
 import sys
 import time
-import threading
-from multiprocessing.dummy import Pool as ThreadPool
+import os
+from functools import partial
+from itertools import repeat
+from multiprocessing import Pool, freeze_support
 
 NUMBERS_PATH = "numbers.txt"
-LOG_PATH = "log_threads.txt"
+LOG_PATH = "log_processes.txt"
 
 
 def read_user_input():
@@ -33,13 +35,13 @@ def read_user_input():
     :return: none
     """
 
-    print("Starting multithreading program.")
+    print("Starting multiprocessing program.")
 
     try:
         keep_running = True
         while keep_running:
             print('--------------------------------------\n'
-                  'Multithreading Implementation.\n'
+                  'Multiprocessing Implementation.\n'
                   'Enter the number of tasks to complete.\n'
                   '(Input must be an integer from 0 to 50 inclusive).\n'
                   'Commands:\n'
@@ -64,21 +66,21 @@ def read_user_input():
                 keep_running = False
                 print("Exiting...")
             elif 0 < user_com_int <= 50:
-                print('Enter number of threads to create.\n'
+                print('Enter number of processes to create.\n'
                       '(Input must be an integer from 1 to 50 inclusive).\n'
                       '--------------------------------------')
-                user_threads = input("Please enter number of threads: ")
+                user_processes = input("Please enter number of processes: ")
                 try:
-                    if not user_threads.isdigit():
+                    if not user_processes.isdigit():
                         raise ValueError
-                    threads_int = int(user_threads)
-                    if not 0 < threads_int <= 50:
+                    processes_int = int(user_processes)
+                    if not 0 < processes_int <= 50:
                         raise ValueError
                 except ValueError:
                     print("Invalid input, returning to task menu.")
                     continue
 
-                multithreading(user_com_int, threads_int)
+                multiprocessing(user_com_int, processes_int)
             else:
                 print("Invalid input, please re-enter.")
 
@@ -87,14 +89,14 @@ def read_user_input():
         sys.exit()
 
 
-def multithreading(total_tasks, total_threads):
+def multiprocessing(total_tasks, total_processes):
     """
-    Performs the mathematical and I/O tasks with simple for loop, with multithreading
+    Performs the mathematical and I/O tasks with simple for loop, with multiprocessing
     implementations.
     Reads numbers from text file up to total tasks assigned, and records the timing
     data of the operations to measure efficiency.
     :param total_tasks: (int) number of tasks to perform
-    :param total_threads: (int) number of threads to create
+    :param total_processes: (int) number of processes to create
     :return: None
     """
     time_total_start = time.perf_counter()
@@ -134,33 +136,27 @@ def multithreading(total_tasks, total_threads):
     except IOError:
         print("Could not read file:", NUMBERS_PATH)
 
-    thread_time_list = list(range(total_tasks))
-    thread_time_list_raw = []
+    process_time_list = list(range(total_tasks))
+    process_time_list_raw = []
     index_list = list(range(total_tasks))
 
-    def thread_func(num, index):
-        time_loop_start = time.perf_counter()
+    with Pool(total_processes) as pool:
+        process_results = pool.starmap(process_func, zip(int_list, index_list))
 
-        factor_list = prime_factorization(num)
-        save_data(num, factor_list)
-
-        thread_time = time.perf_counter() - time_loop_start
-        thread_time_list_raw.append(thread_time)
-        timing_data = f"Task {index+1} time: {thread_time}, by Thread ID: {threading.get_ident()}"
-        print(timing_data)
-        thread_time_list[index] = timing_data
-
-    pool = ThreadPool(total_threads)
-    pool.starmap(thread_func, zip(int_list, index_list))
     total_time = time.perf_counter() - time_total_start
-    avg_task_time = sum(thread_time_list_raw) / len(thread_time_list_raw)
+
+    for result in process_results:
+        process_time_list_raw.append(result[2])
+        process_time_list[result[1]] = result[0]
+
+    avg_task_time = sum(process_time_list_raw) / len(process_time_list_raw)
     print(f"Avg task time: {avg_task_time}")
     print(f"Total time: {total_time}")
 
     try:
         with open(file=LOG_PATH, mode="a", encoding='utf8') as file:
             data_log = f"-----------------Timing Data-----------------\n"
-            for idx, task_time in enumerate(thread_time_list):
+            for idx, task_time in enumerate(process_time_list):
                 data_log += f"{task_time}\n"
             data_log += f"\nAvg task time: {avg_task_time}\n"
             data_log += f"Total time: {total_time}\n"
@@ -168,6 +164,18 @@ def multithreading(total_tasks, total_threads):
             file.write(data_log)
     except IOError:
         print("Could not read file:", NUMBERS_PATH)
+
+
+def process_func(num, index):
+    time_loop_start = time.perf_counter()
+
+    factor_list = prime_factorization(num)
+    save_data(num, factor_list)
+
+    process_time = time.perf_counter() - time_loop_start
+    timing_data = f"Task {index+1} time: {process_time}, by Process ID: {os.getpid()}"
+    print(timing_data)
+    return [timing_data, index, process_time]
 
 
 def prime_factorization(number):
@@ -209,4 +217,6 @@ def save_data(number, factor_list):
         print("Could not read file:", NUMBERS_PATH)
 
 
-read_user_input()
+if __name__ == "__main__":
+    freeze_support()
+    read_user_input()
