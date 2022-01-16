@@ -7,7 +7,7 @@ Assignment 1
 Student:
     - Hung Yu (Angus) Lin, A01034410, Set 6J
 ----------------------------------------------------------------------------------------------------
-multiprocessing.py
+multi_processing.py
     Performs mathematically intensive operations (Prime factorization) with file I/O.
     Implements multiprocessing.
     Measures performance with timing data.
