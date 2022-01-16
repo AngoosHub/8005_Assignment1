@@ -1,0 +1,36 @@
+Prime factorization: 291653
+29, 89, 113
+Prime factorization: 8846
+2, 4423
+Prime factorization: 31246
+2, 17, 919
+Prime factorization: 15665
+5, 13, 241
+Prime factorization: 55325193
+3, 7, 11, 11, 21773
+Prime factorization: 76844050
+2, 5, 5, 1536881
+Prime factorization: 330233
+330233
+Prime factorization: 457
+457
+Prime factorization: 9955606
+2, 733, 6791
+Prime factorization: 80914323
+3, 7, 1783, 2161
+-----------------Timing Data-----------------
+Task 1 time: 0.0005064059999995152, by Thread ID: 123145411186688
+Task 2 time: 0.0016237300000003785, by Thread ID: 123145427976192
+Task 3 time: 0.0009640449999999134, by Thread ID: 123145444765696
+Task 4 time: 0.0007729099999984612, by Thread ID: 123145461555200
+Task 5 time: 0.002041947000000377, by Thread ID: 123145411186688
+Task 6 time: 0.0005171639999996813, by Thread ID: 123145478344704
+Task 7 time: 0.0012948680000004487, by Thread ID: 123145461555200
+Task 8 time: 0.000890242999998847, by Thread ID: 123145444765696
+Task 9 time: 0.0011024380000002054, by Thread ID: 123145478344704
+Task 10 time: 0.0004283400000009152, by Thread ID: 123145427976192
+
+Avg task time: 0.0010142090999998743
+Total time: 0.028790748000000477
+---------------------------------------------
+
