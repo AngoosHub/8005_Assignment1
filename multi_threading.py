@@ -209,4 +209,5 @@ def save_data(number, factor_list):
         print("Could not read file:", NUMBERS_PATH)
 
 
-read_user_input()
+if __name__ == "__main__":
+    read_user_input()
