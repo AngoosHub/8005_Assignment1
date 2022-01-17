@@ -135,6 +135,7 @@ def multiprocessing(total_tasks, total_processes):
                     return
     except IOError:
         print("Could not read file:", NUMBERS_PATH)
+        return
 
     process_time_list = list(range(total_tasks))
     process_time_list_raw = []

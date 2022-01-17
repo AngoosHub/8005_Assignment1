@@ -17,6 +17,7 @@ import sys
 import time
 import threading
 from multiprocessing.dummy import Pool as ThreadPool
+from multiprocessing import freeze_support
 
 NUMBERS_PATH = "numbers.txt"
 LOG_PATH = "log_threads.txt"
@@ -133,6 +134,7 @@ def multithreading(total_tasks, total_threads):
                     return
     except IOError:
         print("Could not read file:", NUMBERS_PATH)
+        return
 
     thread_time_list = list(range(total_tasks))
     thread_time_list_raw = []
@@ -210,4 +212,5 @@ def save_data(number, factor_list):
 
 
 if __name__ == "__main__":
+    freeze_support()
     read_user_input()

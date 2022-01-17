@@ -118,6 +118,7 @@ def basic_loop(total_tasks):
                     return
     except IOError:
         print("Could not read file:", NUMBERS_PATH)
+        return
 
     loop_time_list = []
     for task_counter in range(total_tasks):
